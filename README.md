@@ -23,12 +23,18 @@ pip install -r requirements.txt
 ```
 
 3. 환경 변수 설정
-`.env` 파일을 생성하고 다음 내용을 입력하세요:
+`.env.sample` 파일을 `.env`로 복사하고 필요한 값들을 입력하세요:
+```bash
+cp .env.sample .env
 ```
-ACCESS_KEY=your_access_key
-SECRET_KEY=your_secret_key
-TELEGRAM_BOT_TOKEN=your_telegram_bot_token
-TELEGRAM_CHAT_ID=your_chat_id
+
+`.env` 파일을 열어 다음 값들을 설정하세요:
+```
+ACCESS_KEY=your_ncp_access_key        # NCP API 액세스 키
+SECRET_KEY=your_ncp_secret_key        # NCP API 시크릿 키
+TELEGRAM_BOT_TOKEN=your_bot_token     # 텔레그램 봇 토큰
+TELEGRAM_CHAT_ID=your_chat_id         # 텔레그램 채팅 ID
+TELEGRAM_CHAT_TEST_ID=your_test_id    # (선택사항) 테스트용 채팅 ID
 ```
 
 ## 사용 방법
