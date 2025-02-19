@@ -7,9 +7,12 @@ import os
 from datetime import datetime, date
 import time
 from dotenv import load_dotenv
-from telegram_util import TelegramUtil
+import telegramBot
 import json
 import holidays
+from utils.logger_util import LoggerUtil
+
+logger = LoggerUtil().get_logger()
 
 def isTodayHoliday():
     # 한국 공휴일 설정
@@ -63,9 +66,9 @@ def getNcpServerState(target, status):
         else:
             message = "ok"
     
-    print(message)
+    logger.info(message)
     if message != "ok":
-        telegram_util.send_message(f"[{target}]{message}")
+        bot.send_message(f"[{target}]{message}")
 
 def setNcpServerState(target, state):
     url = "https://ncloud.apigw.ntruss.com"
@@ -100,21 +103,21 @@ def setNcpServerState(target, state):
     else:
         message = f"[성공]\nmethod : {method}"
         
-    print(message)
-    telegram_util.send_message(f"[{target}]{message}")
+    logger.info(message)
+    bot.send_message(f"[{target}]{message}")
 
 if __name__ == "__main__":
     load_dotenv()
     ACCESS_KEY = os.getenv("ACCESS_KEY")
     SECRET_KEY = os.getenv("SECRET_KEY")
-    telegram_util = TelegramUtil()
+    bot = telegramBot.TelegramBot()
 
     if isTodayHoliday(): #공휴일이면 종료
-        print('공휴일 종료')
+        logger.info('공휴일 종료')
         sys.exit()
 
     if len(sys.argv) != 3:
-        print("Usage: python script.py <method> <status>")
+        logger.error("Usage: python script.py <method> <status>")
         sys.exit()
 
     method = sys.argv[1]
@@ -125,14 +128,14 @@ if __name__ == "__main__":
 
     if method == 'set':
         if status not in ["on", "off"]:
-            print("Invalid state. Use 'on' or 'off'.")
+            logger.error("Invalid state. Use 'on' or 'off'.")
         else :
             setNcpServerState(target1, status)
             setNcpServerState(target2, status)
     
     if method == 'get':
         if status not in ["running", "stopped"]:
-            print("Invalid state. Use 'running' or 'stopped'.")
+            logger.error("Invalid state. Use 'running' or 'stopped'.")
         else:
             getNcpServerState(target1, status)
             getNcpServerState(target2, status)
