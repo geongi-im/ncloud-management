@@ -110,6 +110,8 @@ if __name__ == "__main__":
     load_dotenv()
     ACCESS_KEY = os.getenv("ACCESS_KEY")
     SECRET_KEY = os.getenv("SECRET_KEY")
+    # 환경 변수에서 server_list를 가져와서 리스트로 변환
+    server_list = json.loads(os.getenv("SERVER_LIST", "[]"))
     bot = telegramBot.TelegramBot()
 
     if isTodayHoliday(): #공휴일이면 종료
@@ -123,19 +125,16 @@ if __name__ == "__main__":
     method = sys.argv[1]
     status = sys.argv[2]
 
-    target1 = "25741251" #1번 서버 인스턴스 번호
-    target2 = "26055342" #2번 서버 인스턴스 번호
-
     if method == 'set':
         if status not in ["on", "off"]:
             logger.error("Invalid state. Use 'on' or 'off'.")
-        else :
-            setNcpServerState(target1, status)
-            setNcpServerState(target2, status)
+        else:
+            for target in server_list:
+                setNcpServerState(str(target), status)
     
     if method == 'get':
         if status not in ["running", "stopped"]:
             logger.error("Invalid state. Use 'running' or 'stopped'.")
         else:
-            getNcpServerState(target1, status)
-            getNcpServerState(target2, status)
+            for target in server_list:
+                getNcpServerState(str(target), status)
